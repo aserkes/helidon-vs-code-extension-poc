@@ -4,7 +4,7 @@
 
 ## How to test
 1. Clone the project
-2. Run following command in your newly cloned project
+2. Run the following command in your newly cloned project folder
     * npm install
 2. Open it in VS Code
 3. Run it
