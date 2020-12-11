@@ -1,13 +1,30 @@
 {
 	"name": "helidon",
 	"displayName": "Helidon",
-	"description": "",
+	"description": "Helidon project generator",
 	"version": "0.0.1",
+	"icon": "images/helidon_logo_light.png",
+	"author": "Oracle Corporation",
+	"publisher": "Oracle",
+	"license": "Apache-2.0",
 	"engines": {
 		"vscode": "^1.43.0"
 	},
 	"categories": [
 		"Other"
+	],
+	"galleryBanner": {
+		"color": "#b3d4fc",
+		"theme": "light"
+	},
+	"repository": {
+		"type": "git",
+		"url": ""
+	},
+	"keywords": [
+		"java",
+		"helidon",
+		"maven"
 	],
 	"activationEvents": [
 		"onCommand:helidon.generate",
@@ -23,7 +40,7 @@
 					"helidon.showStartPage": {
 						"type": "boolean",
 						"default": true,
-						"description": "If start page should be displayed by on startup."
+						"description": "If start page should be displayed on extention startup."
 					}
 				}
 			}

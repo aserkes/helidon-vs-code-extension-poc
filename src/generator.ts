@@ -66,8 +66,12 @@ export async function showHelidonGenerator() {
     }
 
     const quickPickItems: ProjectData[] = [
-        { label: "Helidon MP", projectName: "helidon-quickstart-mp", packages: "io.helidon.examples.quickstart.mp" },
-        { label: "Helidon SE", projectName: "helidon-quickstart-se", packages: "io.helidon.examples.quickstart.se" }
+        { label: "Helidon MP Bare", projectName: "helidon-bare-mp", packages: "io.helidon.examples.bare.mp" },
+        { label: "Helidon MP Database", projectName: "helidon-database-mp", packages: "io.helidon.examples.database.mp" },
+        { label: "Helidon MP Quickstart", projectName: "helidon-quickstart-mp", packages: "io.helidon.examples.quickstart.mp" },
+        { label: "Helidon SE Bare", projectName: "helidon-bare-se", packages: "io.helidon.examples.bare.se" },
+        { label: "Helidon SE Database", projectName: "helidon-database-se", packages: "io.helidon.examples.database.se" },
+        { label: "Helidon SE Quickstart", projectName: "helidon-quickstart-se", packages: "io.helidon.examples.quickstart.se" }
     ];
 
     async function showInputBox(data: InputBoxData) {
