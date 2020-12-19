@@ -14,39 +14,26 @@
  * limitations under the License.
  */
 import * as vscode from 'vscode';
-import { showHelidonGenerator } from './generator';
-import * as path from "path";
+import {showHelidonGenerator} from './generator';
+import {startHelidonDev} from "./helidonDev";
+import {VSCodeHelidonCommands} from "./common";
+import {openStartPage} from "./startPage";
 
 export function activate(context: vscode.ExtensionContext) {
 
-	context.subscriptions.push(vscode.commands.registerCommand('helidon.generate', () => {
-		showHelidonGenerator();
+    context.subscriptions.push(vscode.commands.registerCommand(VSCodeHelidonCommands.GENERATE_PROJECT, () => {
+        showHelidonGenerator();
+    }));
+
+	context.subscriptions.push(vscode.commands.registerCommand(VSCodeHelidonCommands.START_PAGE, () => {
+		openStartPage(context);
 	}));
 
-	context.subscriptions.push(
-		vscode.commands.registerCommand('helidon.startPage', () => {
-			// Create and show panel
-			const panel = vscode.window.createWebviewPanel(
-				'helidon_generator',
-				'helidon',
-				vscode.ViewColumn.One,
-				{
-					enableCommandUris: true,
-					enableScripts: true
-				}
-			);
-
-			// And set its HTML content
-			vscode.workspace.openTextDocument(vscode.Uri.file(
-				path.join(context.extensionPath, 'assets', 'start_page.html')
-			).fsPath).then(
-				doc => {
-					panel.webview.html = doc.getText();
-				}
-			);
-		})
-	);
+    context.subscriptions.push(vscode.commands.registerCommand(VSCodeHelidonCommands.DEV_SERVER_START, () => {
+        startHelidonDev();
+    }));
 
 }
 
-export function deactivate() { }
+export function deactivate() {
+}

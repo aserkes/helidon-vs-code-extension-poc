@@ -29,6 +29,7 @@
 	"activationEvents": [
 		"onCommand:helidon.generate",
 		"onCommand:helidon.startPage",
+		"onCommand:helidon.startDev",
 		"onLanguage:java"
 	],
 	"main": "./out/extension.js",
@@ -53,6 +54,10 @@
 			{
 				"command": "helidon.startPage",
 				"title": "Helidon: Start page"
+			},
+			{
+				"command": "helidon.startDev",
+				"title": "Helidon: Start helidon dev"
 			}
 		]
 	},
@@ -65,16 +70,20 @@
 		"test": "node ./out/test/runTest.js"
 	},
 	"devDependencies": {
+		"@types/chai": "^4.2.14",
 		"@types/glob": "^7.1.1",
 		"@types/mocha": "^7.0.1",
 		"@types/node": "^12.11.7",
 		"@types/vscode": "^1.43.0",
-		"eslint": "^6.8.0",
-		"@typescript-eslint/parser": "^2.18.0",
 		"@typescript-eslint/eslint-plugin": "^2.18.0",
+		"@typescript-eslint/parser": "^2.18.0",
+		"eslint": "^6.8.0",
 		"glob": "^7.1.6",
 		"mocha": "^7.0.1",
 		"typescript": "^3.7.5",
 		"vscode-test": "^1.3.0"
+	},
+	"dependencies": {
+		"vscode-uri": "^3.0.1"
 	}
 }

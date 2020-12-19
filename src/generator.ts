@@ -15,8 +15,8 @@
  */
 import * as fs from 'fs';
 import * as path from 'path';
-import { InputBox, Terminal, window, Uri, OpenDialogOptions, workspace, commands, QuickPickItem } from 'vscode';
-import { sync } from 'glob';
+import { window, Uri, workspace, commands, QuickPickItem } from 'vscode';
+import {showOpenFolderDialog} from "./common";
 
 export async function showHelidonGenerator() {
 
@@ -269,21 +269,6 @@ export async function showHelidonGenerator() {
         }
 
         return directory;
-    }
-
-    async function showOpenFolderDialog(customOptions: OpenDialogOptions): Promise<Uri | undefined> {
-        const openDialogOptions: OpenDialogOptions = {
-            canSelectFolders: true,
-            canSelectFiles: false,
-            canSelectMany: false,
-        };
-
-        const result: Uri[] | undefined = await window.showOpenDialog(Object.assign(openDialogOptions, customOptions));
-        if (result && result.length > 0) {
-            return Promise.resolve(result[0]);
-        } else {
-            return Promise.resolve(undefined);
-        }
     }
 
     async function openPreparedProject(uri: Uri): Promise<void> {
