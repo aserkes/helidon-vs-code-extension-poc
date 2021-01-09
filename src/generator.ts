@@ -236,7 +236,7 @@ export async function showHelidonGenerator() {
             console.log(stdout);
             if (stdout.includes("BUILD SUCCESS")) {
                 window.showInformationMessage('Project generated...');
-                openPreparedProject(targetDir);
+                openPreparedProject(targetDir, projectData.artifactId);
             } else if (stdout.includes("BUILD FAILURE")) {
                 window.showInformationMessage('Project generation failed...');
             }
@@ -271,28 +271,38 @@ export async function showHelidonGenerator() {
         return directory;
     }
 
-    async function openPreparedProject(uri: Uri): Promise<void> {
+    async function openPreparedProject(targetDir: Uri, artifactId: string): Promise<void> {
+
         const openFolderCommand = 'vscode.openFolder';
+        const newProjectFolderUri = getNewProjectFolder(targetDir, artifactId);
 
         if (workspace.workspaceFolders) {
             const input: string | undefined = await window.showInformationMessage(PROJECT_READY, NEW_WINDOW, ADD_TO_WORKSPACE);
             if (!input) {
                 return;
             } else if (input === ADD_TO_WORKSPACE) {
-                workspace.updateWorkspaceFolders(workspace.workspaceFolders ? workspace.workspaceFolders.length : 0, undefined, { uri });
+                workspace.updateWorkspaceFolders(
+                    workspace.workspaceFolders ? workspace.workspaceFolders.length : 0,
+                    undefined,
+                    {uri: newProjectFolderUri}
+                );
             } else {
-                commands.executeCommand(openFolderCommand, uri, true);
+                commands.executeCommand(openFolderCommand, newProjectFolderUri, true);
             }
         } else if (window.visibleTextEditors.length > 0) {
             //If VS does not have any project opened, but has some file opened in it.
             const input: string | undefined = await window.showInformationMessage(PROJECT_READY, NEW_WINDOW, CURRENT_WINDOW);
             if (input) {
-                commands.executeCommand(openFolderCommand, uri, NEW_WINDOW === input);
+                commands.executeCommand(openFolderCommand, newProjectFolderUri, NEW_WINDOW === input);
             }
         } else {
-            commands.executeCommand(openFolderCommand, uri, false);
+            commands.executeCommand(openFolderCommand, newProjectFolderUri, false);
         }
 
+    }
+
+    function getNewProjectFolder(targetDir: Uri, artifactId: string): Uri {
+        return Uri.file(path.join(targetDir.fsPath, artifactId));
     }
 
     try {
