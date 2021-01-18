@@ -24,6 +24,10 @@ export namespace VSCodeHelidonCommands {
     export const START_PAGE = 'helidon.startPage';
 }
 
+export namespace VSCodeJavaCommands {
+    export const JAVA_MARKERS_COMMAND = 'microprofile/java/projectLabels';
+}
+
 export async function showOpenFolderDialog(customOptions: OpenDialogOptions): Promise<Uri | undefined> {
     const openDialogOptions: OpenDialogOptions = {
         canSelectFolders: true,

@@ -18,6 +18,7 @@ import {showHelidonGenerator} from './generator';
 import {startHelidonDev} from "./helidonDev";
 import {VSCodeHelidonCommands} from "./common";
 import {openStartPage} from "./startPage";
+import {updateWorkspaceDocuments} from "./propertiesSupport";
 
 export function activate(context: vscode.ExtensionContext) {
 
@@ -33,6 +34,7 @@ export function activate(context: vscode.ExtensionContext) {
         startHelidonDev();
     }));
 
+    updateWorkspaceDocuments(context);
 }
 
 export function deactivate() {
