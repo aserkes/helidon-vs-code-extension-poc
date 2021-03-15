@@ -16,7 +16,10 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import { window, Uri, workspace, commands, QuickPickItem } from 'vscode';
-import {showOpenFolderDialog} from "./common";
+import { showOpenFolderDialog, showPickOption } from "./common";
+import * as vscode from 'vscode';
+import { TextDecoder } from 'util';
+import { spawn } from 'child_process';
 
 export async function showHelidonGenerator() {
 
@@ -42,14 +45,6 @@ export async function showHelidonGenerator() {
         totalSteps: number;
         currentStep: number;
         messageValidation: (value: string) => Promise<string | undefined>;
-    }
-
-    interface QuickPickData {
-        title: string;
-        placeholder: string;
-        totalSteps: number;
-        currentStep: number;
-        items: QuickPickItem[];
     }
 
     interface ProjectData extends QuickPickItem {
@@ -104,39 +99,15 @@ export async function showHelidonGenerator() {
                 inputBox.dispose();
             });
         });
-    }
-
-    async function showPickOption(data: QuickPickData) {
-        return await new Promise<QuickPickItem | undefined>((resolve, reject) => {
-            let quickPick = window.createQuickPick();
-            quickPick.title = data.title;
-            quickPick.totalSteps = data.currentStep;
-            quickPick.step = data.currentStep;
-            quickPick.items = data.items;
-            quickPick.ignoreFocusOut = true;
-            quickPick.canSelectMany = false;
-            quickPick.placeholder = data.placeholder;
-
-            quickPick.show();
-            quickPick.onDidAccept(async () => {
-                if (quickPick.selectedItems[0]) {
-                    resolve(quickPick.selectedItems[0]);
-                    quickPick.dispose();
-                }
-            });
-            quickPick.onDidHide(() => {
-                quickPick.dispose();
-            });
-        });
-    }
+    } 
 
     async function obtainTypeOfProject(projectState: Partial<GeneratedProjectData>) {
 
-        projectState.projectData = (<ProjectData> await showPickOption({
+        projectState.projectData = (<ProjectData>await showPickOption({
             title: "Choose project you want to generate.",
             totalSteps: NUMBER_OF_STEPS,
             currentStep: 1,
-            placeholder: "Project type", 
+            placeholder: "Project type",
             items: quickPickItems
         }));
 
@@ -231,7 +202,9 @@ export async function showHelidonGenerator() {
         let opts = {
             cwd: targetDir.fsPath //cwd means -> current working directory (where this maven command will by executed)
         };
+
         const exec = require('child_process').exec;
+        
         await exec(cmd, opts, function (error: string, stdout: string, stderr: string) {
             console.log(stdout);
             if (stdout.includes("BUILD SUCCESS")) {
@@ -247,6 +220,7 @@ export async function showHelidonGenerator() {
                 console.log(error);
             }
         });
+
     }
 
     async function obtainTargetFolder(projectName: string) {
@@ -284,7 +258,7 @@ export async function showHelidonGenerator() {
                 workspace.updateWorkspaceFolders(
                     workspace.workspaceFolders ? workspace.workspaceFolders.length : 0,
                     undefined,
-                    {uri: newProjectFolderUri}
+                    { uri: newProjectFolderUri }
                 );
             } else {
                 commands.executeCommand(openFolderCommand, newProjectFolderUri, true);

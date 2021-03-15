@@ -1,0 +1,25 @@
+import { commands, workspace, Disposable, window } from 'vscode';
+
+export class HelidonProjectListener {
+
+    constructor() {
+      }
+
+    public async getHelidonProjectListener(): Promise<Disposable> {
+        return new Promise<Disposable>((resolve, reject) => {
+            const listener: Disposable = workspace.onDidChangeWorkspaceFolders(async () => {
+                await new Promise((res => setTimeout(res, 100)));
+                await this.updateProjectContext();
+            });
+            resolve(listener);
+        });
+    }
+
+    public async updateProjectContext(): Promise<void> {
+        await commands.executeCommand('setContext', 'helidonProjectsExist', true);
+    }
+
+}
+
+const helidonProjectListener: HelidonProjectListener = new HelidonProjectListener();
+export default helidonProjectListener;

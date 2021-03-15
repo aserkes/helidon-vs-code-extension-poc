@@ -14,13 +14,22 @@
  * limitations under the License.
  */
 
-import {OpenDialogOptions, Uri, window} from "vscode";
+import {OpenDialogOptions, QuickPickItem, Uri, window} from "vscode";
 import * as vscode from "vscode";
+
+export interface QuickPickData {
+    title: string;
+    placeholder: string;
+    totalSteps: number;
+    currentStep: number;
+    items: QuickPickItem[];
+}
 
 // VS Code Helidon extension commands
 export namespace VSCodeHelidonCommands {
     export const GENERATE_PROJECT = 'helidon.generate';
     export const DEV_SERVER_START = 'helidon.startDev';
+    export const DEV_SERVER_STOP = 'helidon.stopDev';
     export const START_PAGE = 'helidon.startPage';
 }
 
@@ -46,4 +55,28 @@ export async function showOpenFolderDialog(customOptions: OpenDialogOptions): Pr
 export function getPageContent(pagePath: string) :Thenable<string> {
     return vscode.workspace.openTextDocument(vscode.Uri.file(pagePath).fsPath)
         .then(doc => doc.getText());
+}
+
+export async function showPickOption(data: QuickPickData) {
+    return await new Promise<QuickPickItem | undefined>((resolve, reject) => {
+        let quickPick = window.createQuickPick();
+        quickPick.title = data.title;
+        quickPick.totalSteps = data.currentStep;
+        quickPick.step = data.currentStep;
+        quickPick.items = data.items;
+        quickPick.ignoreFocusOut = true;
+        quickPick.canSelectMany = false;
+        quickPick.placeholder = data.placeholder;
+
+        quickPick.show();
+        quickPick.onDidAccept(async () => {
+            if (quickPick.selectedItems[0]) {
+                resolve(quickPick.selectedItems[0]);
+                quickPick.dispose();
+            }
+        });
+        quickPick.onDidHide(() => {
+            quickPick.dispose();
+        });
+    });
 }
