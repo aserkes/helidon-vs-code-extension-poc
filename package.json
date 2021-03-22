@@ -30,6 +30,7 @@
         "onCommand:helidon.generate",
         "onCommand:helidon.startPage",
         "onCommand:helidon.startDev",
+        "onCommand:helidon.stopDev",
         "onLanguage:java",
         "workspaceContains:**/src/main/resources/application.properties",
         "workspaceContains:**src/main/resources/META-INF/microprofile-config.properties",

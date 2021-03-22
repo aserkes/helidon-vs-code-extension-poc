@@ -1,20 +1,11 @@
 /**
- * Copyright (c) 2020 Oracle and/or its affiliates.
+ * Copyright (c) 2021, Oracle and/or its affiliates. All rights reserved.
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
  */
 
-import {OpenDialogOptions, QuickPickItem, Uri, window} from "vscode";
+import { QuickPickItem } from "vscode";
 import * as vscode from "vscode";
 
 export interface QuickPickData {
@@ -37,46 +28,38 @@ export namespace VSCodeJavaCommands {
     export const JAVA_MARKERS_COMMAND = 'microprofile/java/projectLabels';
 }
 
-export async function showOpenFolderDialog(customOptions: OpenDialogOptions): Promise<Uri | undefined> {
-    const openDialogOptions: OpenDialogOptions = {
-        canSelectFolders: true,
-        canSelectFiles: false,
-        canSelectMany: false,
-    };
-
-    const result: Uri[] | undefined = await window.showOpenDialog(Object.assign(openDialogOptions, customOptions));
-    if (result && result.length > 0) {
-        return Promise.resolve(result[0]);
-    } else {
-        return Promise.resolve(undefined);
-    }
-}
-
 export function getPageContent(pagePath: string) :Thenable<string> {
     return vscode.workspace.openTextDocument(vscode.Uri.file(pagePath).fsPath)
         .then(doc => doc.getText());
 }
 
-export async function showPickOption(data: QuickPickData) {
-    return await new Promise<QuickPickItem | undefined>((resolve, reject) => {
-        let quickPick = window.createQuickPick();
-        quickPick.title = data.title;
-        quickPick.totalSteps = data.currentStep;
-        quickPick.step = data.currentStep;
-        quickPick.items = data.items;
-        quickPick.ignoreFocusOut = true;
-        quickPick.canSelectMany = false;
-        quickPick.placeholder = data.placeholder;
-
-        quickPick.show();
-        quickPick.onDidAccept(async () => {
-            if (quickPick.selectedItems[0]) {
-                resolve(quickPick.selectedItems[0]);
-                quickPick.dispose();
-            }
-        });
-        quickPick.onDidHide(() => {
-            quickPick.dispose();
-        });
-    });
+export function validateUserInput (userInput: string, pattern: RegExp, errorMessage: string) : string | undefined {
+    if (!pattern.test(userInput)) {
+        return errorMessage;
+    }
+    return undefined;
 }
+
+// export async function showPickOption(data: QuickPickData) {
+//     return await new Promise<QuickPickItem | undefined>((resolve, reject) => {
+//         let quickPick = window.createQuickPick();
+//         quickPick.title = data.title;
+//         quickPick.totalSteps = data.currentStep;
+//         quickPick.step = data.currentStep;
+//         quickPick.items = data.items;
+//         quickPick.ignoreFocusOut = true;
+//         quickPick.canSelectMany = false;
+//         quickPick.placeholder = data.placeholder;
+//
+//         quickPick.show();
+//         quickPick.onDidAccept(async () => {
+//             if (quickPick.selectedItems[0]) {
+//                 resolve(quickPick.selectedItems[0]);
+//                 quickPick.dispose();
+//             }
+//         });
+//         quickPick.onDidHide(() => {
+//             quickPick.dispose();
+//         });
+//     });
+// }
