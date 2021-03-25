@@ -13,18 +13,10 @@ import {FileSystemAPI} from "./FileSystemAPI";
 import {ChildProcessAPI} from "./ChildProcessAPI";
 import {OutputFormatter} from "./OutputFormatter";
 
-// const fs = require('fs');
 const POM_XML_FILE: string = 'pom.xml';
 const SRC_DIR: string = 'src';
 const EXCLUDE_DIRS: RegExp[] = [/target/i, /^\./i];
-// let currentProcess: ChildProcess;
 const launchedServers: Map<string, HelidonServerInstance> = new Map();
-
-// event
-// https://code.visualstudio.com/api/references/vscode-api
-// onDidChangeWorkspaceFolders: Event<WorkspaceFoldersChangeEvent>
-// onDidSaveTextDocument: Event<TextDocument>
-// CustomDocumentContentChangeEvent<T> - CustomDocumentProvider.onDidChangeCustomDocument.
 
 export interface HelidonServerInstance {
     serverProcess: ChildProcess;
@@ -45,6 +37,10 @@ export function getLaunchedServers(): Map<string, HelidonServerInstance> {
 
 export async function startHelidonDev(): Promise<Map<string, HelidonServerInstance>> {
     try {
+        if (!ChildProcessAPI.isCommandExist('helidon')){
+            VSCodeAPI.showInformationMessage('Helidon CLI is not installed');
+            return new Map();
+        }
         let helidonProjectDirs = getHelidonProjectDirs();
         let helidonProjectDir: string;
 
@@ -53,13 +49,11 @@ export async function startHelidonDev(): Promise<Map<string, HelidonServerInstan
         } else if (helidonProjectDirs.length == 1) {
             helidonProjectDir = helidonProjectDirs[0];
         } else {
-            // let directory = await showOpenFolderDialog({ openLabel: 'Select folder with Helidon Project' });
             let directory = await obtainHelidonProjectDirToStart(helidonProjectDirs);
 
             if (!directory) {
                 return new Map();
             }
-            // helidonProjectDir = directory.fsPath;
             helidonProjectDir = directory.description!;
         }
 
@@ -68,7 +62,6 @@ export async function startHelidonDev(): Promise<Map<string, HelidonServerInstan
         return launchedServers;
 
     } catch (e) {
-        // window.showErrorMessage(e);
         VSCodeAPI.showErrorMessage(e);
         return new Map();
     }
@@ -115,12 +108,10 @@ function obtainHelidonServerInstance(helidonProjectDir: string): HelidonServerIn
     }
 
     //create new instance
-    // let outputChannel = vscode.window.createOutputChannel(helidonDirName);
     let outputChannel = VSCodeAPI.createOutputChannel(helidonDirName);
     outputChannel.show();
     let serverProcess = obtainNewServerProcess(helidonProjectDir);
     configureServerOutput(serverProcess, outputChannel);
-
 
     return {
         serverProcess: serverProcess,
@@ -145,76 +136,39 @@ function obtainNewServerProcess(helidonProjectDir: string): ChildProcess {
     let opts = {
         cwd: helidonProjectDir //cwd means -> current working directory (where this maven command will by executed)
     };
-    // let serverProcess = require('child_process').spawn(cmdSpan, args, opts);
     let serverProcess = ChildProcessAPI.spawnProcess(cmdSpan, args, opts);
     return serverProcess;
 }
 
 function configureServerOutput(serverProcess: ChildProcess, outputChannel: OutputChannel) {
 
-    let tempString: string = '';
-    let stripAnsi = require('strip-ansi');
     let outputFormatter = new OutputFormatter(outputChannel);
 
     serverProcess!.stdout!.on('data', function (data: string) {
         outputFormatter.formatInputString(data);
-        // data = data.toString();
-        // console.log(data);
-
-        // let countFinishedLines = data.match(/[\n\r]/g)?.length ?? 0;
-        // if (countFinishedLines === 0) {
-        //     tempString += data;
-        //     return;
-        // }
-        // let splitData = data.split(/[\n\r]/g);
-        // if (splitData[splitData.length - 1] === '') {
-        //     splitData.splice(splitData.length - 1, 1);
-        // }
-        // let lastOutputLineIndex = 0;
-        // if (splitData.length === countFinishedLines) {
-        //     lastOutputLineIndex = countFinishedLines;
-        //     outputLines(splitData, lastOutputLineIndex);
-        // } else {
-        //     lastOutputLineIndex = countFinishedLines;
-        //     outputLines(splitData, lastOutputLineIndex);
-        //     tempString = splitData[splitData.length - 1];
-        // }
     });
 
     serverProcess!.stderr!.on('data', (data: string) => {
         console.error(data);
-        // window.showErrorMessage(data);
         VSCodeAPI.showErrorMessage(data)
     });
 
     serverProcess.on('close', (code: string) => {
         outputChannel.appendLine("Server stopped");
     });
-
-    // function outputLines(lines: string[], lastIndex: number) {
-    //     for (let i = 0; i < lastIndex; i++) {
-    //         if (i === 0) {
-    //             outputChannel.appendLine(stripAnsi(tempString + lines[i]));
-    //             tempString = '';
-    //         } else {
-    //             outputChannel.appendLine(stripAnsi(lines[i]));
-    //         }
-    //     }
-    // }
 }
 
 export async function stopHelidonDev() {
     try {
+        if (!ChildProcessAPI.isCommandExist('helidon')){
+            return;
+        }
         let currentHelidonServer: HelidonServerInstance;
         let activeServerNames = getActiveServerNames();
         if (activeServerNames.length == 0) {
             return;
         }
-        // if (launchedServers.size == 0) {
-        //     return;
-        // }
-        if (activeServerNames.length == 1) {//launchedServers.size == 1
-            // currentHelidonServer = launchedServers.values().next().value;
+        if (activeServerNames.length == 1) {
             currentHelidonServer = launchedServers.get(activeServerNames[0])!;
             deactivateServer(currentHelidonServer);
             return;
@@ -223,15 +177,10 @@ export async function stopHelidonDev() {
         let stopServerName = await obtainStopServerName();
 
         if (stopServerName) {
-            // currentHelidonServer = launchedServers.get(stopServerName.label)!;
             currentHelidonServer = launchedServers.get(stopServerName)!;
             deactivateServer(currentHelidonServer);
         }
-
-        // vscode.window.terminals.filter(terminal => terminal.name === 'helidon-bare-mp')[0].dispose();
-        // vscode.window.terminals.filter(terminal => terminal.name === 'helidon-bare-mp')[0].show();
     } catch (e) {
-        // window.showErrorMessage(e);
         VSCodeAPI.showErrorMessage(e)
         return;
     }
@@ -240,11 +189,6 @@ export async function stopHelidonDev() {
 async function obtainStopServerName(): Promise<string | undefined> {
 
     let runningProjectNames: QuickPickItem[] = [];
-    // launchedServers.forEach((value: HelidonServerInstance, key: string) => {
-    //     if (value.isActive) {
-    //         runningProjectNames.push({ label: key })
-    //     }
-    // });
     getActiveServerNames().forEach(name => runningProjectNames.push({label: name}));
 
     let stopServer = await VSCodeAPI.showPickOption({
@@ -277,8 +221,6 @@ function deactivateServer(currentHelidonServer: HelidonServerInstance) {
 }
 
 function killProcess(process: ChildProcess) {
-    // let kill = require('tree-kill');
-    // kill(process.pid);
     ChildProcessAPI.killProcess(process.pid);
 }
 
@@ -297,20 +239,13 @@ function getDirsByFileName(inputDirPaths: string[], searchFileName: string): str
         for (let inputDir of inputDirs) {
             let searchFilePath = path.join(inputDir, searchFile);
             let srcDirPath = path.join(inputDir, SRC_DIR);
-            // if (fs.existsSync(searchFilePath) && fs.existsSync(srcDirPath)) {
             if (FileSystemAPI.isPathExistsSync(searchFilePath) && FileSystemAPI.isPathExistsSync(srcDirPath)) {
-                console.log("pomFilePath - " + searchFilePath);
-                console.log("srcDirPath - " + srcDirPath);
                 dirPaths.push(inputDir);
             }
-            // fs.readdirSync(inputDir).forEach((file: string) => {
             FileSystemAPI.readDirSync(inputDir).forEach((file: string) => {
                 let filePath = path.join(inputDir, file);
-                // if (fs.lstatSync(filePath).isDirectory()) {
                 if (FileSystemAPI.isDirectorySync(filePath)) {
-                    // console.log("inputDir = ", inputDir);
                     if (!isDirMatchesPattern(filePath, EXCLUDE_DIRS)) {
-                        // console.log("isDirectory = " + filePath);
                         recursiveSearch([filePath], searchFile);
                     }
                 }
@@ -321,10 +256,8 @@ function getDirsByFileName(inputDirPaths: string[], searchFileName: string): str
 }
 
 function isDirMatchesPattern(dirName: string, patterns: RegExp[]): boolean {
-    // console.log("path.basename(dirName) - "+path.basename(dirName));
     for (let pattern of patterns) {
         if (pattern.test(path.basename(dirName))) {
-            // console.log("path.basename(dirName) TRUE = "+path.basename(dirName));
             return true;
         }
     }
@@ -335,12 +268,9 @@ function getHelidonProjectDirs(): string[] {
     let helidonProjectDirs: string[] = [];
     let rootDirPaths = getRootDirPaths();
     let MavenProjectDirs = getDirsByFileName(rootDirPaths, POM_XML_FILE);
-    console.log("projectDirs - " + MavenProjectDirs.toString());
     for (let mavenProject of MavenProjectDirs) {
         let mavenProjectPomPath = path.join(mavenProject, POM_XML_FILE);
         let isHelidonProject = isPomFileContainsHelidonDependency(mavenProjectPomPath);
-        console.log("mavenProject - " + mavenProjectPomPath);
-        console.log("isHelidonProject - " + isHelidonProject);
         if (isHelidonProject) {
             helidonProjectDirs.push(mavenProject);
         }
@@ -350,7 +280,6 @@ function getHelidonProjectDirs(): string[] {
 
 function isPomFileContainsHelidonDependency(pomFilePath: string): boolean {
     let regex = /.*<dependency>[^<>]*<groupId>[^<>]*helidon[^<>]*<\/groupId>.*/isg
-    // let pomContent = fs.readFileSync(pomFilePath, 'utf8');
     let pomContent = FileSystemAPI.readTextFileSync(pomFilePath, 'utf8');
     if (pomContent) {
         return regex.test(pomContent);
@@ -362,13 +291,12 @@ function isPomFileContainsHelidonDependency(pomFilePath: string): boolean {
  * Find full paths of the root directories for the current workspace
  */
 function getRootDirPaths(): string[] {
-    let dirs = VSCodeAPI.getWorkspaceFolders();//vscode.workspace.workspaceFolders;
+    let dirs = VSCodeAPI.getWorkspaceFolders();
     if (!dirs) {
         return [];
     }
     let dirPaths: string[] = [];
     for (let dir of dirs) {
-        console.log("dir - " + dir.uri.fsPath);
         dirPaths.push(dir.uri.fsPath);
     }
     return dirPaths;

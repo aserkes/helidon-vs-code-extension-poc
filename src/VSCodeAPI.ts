@@ -5,7 +5,6 @@
  * Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
  */
 
-// import * as vscode from "vscode";
 import {QuickPickData} from "./common";
 import {
     commands, InputBox,
@@ -30,6 +29,7 @@ export interface InputBoxData {
 }
 
 export class VSCodeAPI {
+    
     constructor() {
     }
 

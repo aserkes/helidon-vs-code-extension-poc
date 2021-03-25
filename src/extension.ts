@@ -16,10 +16,6 @@ import { commands, WorkspaceFoldersChangeEvent } from 'vscode';
 
 export function activate(context: vscode.ExtensionContext) {
 
-    // helidonProjectListener.getHelidonProjectListener().then((disposableListener: Disposable) => {
-    //     context.subscriptions.push(disposableListener);
-    //   });
-
     vscode.workspace.onDidChangeWorkspaceFolders((event: WorkspaceFoldersChangeEvent)=>{
         if (event.added.length>0) {
             commands.executeCommand('setContext', 'helidonProjectsExist', true);

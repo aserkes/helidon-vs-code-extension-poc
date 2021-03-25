@@ -39,27 +39,3 @@ export function validateUserInput (userInput: string, pattern: RegExp, errorMess
     }
     return undefined;
 }
-
-// export async function showPickOption(data: QuickPickData) {
-//     return await new Promise<QuickPickItem | undefined>((resolve, reject) => {
-//         let quickPick = window.createQuickPick();
-//         quickPick.title = data.title;
-//         quickPick.totalSteps = data.currentStep;
-//         quickPick.step = data.currentStep;
-//         quickPick.items = data.items;
-//         quickPick.ignoreFocusOut = true;
-//         quickPick.canSelectMany = false;
-//         quickPick.placeholder = data.placeholder;
-//
-//         quickPick.show();
-//         quickPick.onDidAccept(async () => {
-//             if (quickPick.selectedItems[0]) {
-//                 resolve(quickPick.selectedItems[0]);
-//                 quickPick.dispose();
-//             }
-//         });
-//         quickPick.onDidHide(() => {
-//             quickPick.dispose();
-//         });
-//     });
-// }

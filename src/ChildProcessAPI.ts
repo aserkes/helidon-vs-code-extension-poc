@@ -9,16 +9,23 @@ import { ChildProcess } from "child_process";
 
 export class ChildProcessAPI {
 
+    static childProcess = require('child_process');
+    static kill = require('tree-kill');
+    static commandExistsSync = require('command-exists').sync;
+
     public static spawnProcess(command: String, args: string[], options: Object): ChildProcess {
-        return require('child_process').spawn(command, args, options);
+        return this.childProcess.spawn(command, args, options);
     }
 
     public static execProcess(command: String, options: Object, callback: Function): ChildProcess {
-        return require('child_process').exec(command, options, callback);
+        return this.childProcess.exec(command, options, callback);
     }
 
-    public static killProcess(processPid: number){
-        let kill = require('tree-kill');
-        kill(processPid);
+    public static killProcess(processPid: number) {
+        this.kill(processPid);
+    }
+
+    public static isCommandExist(command: string): boolean {
+        return this.commandExistsSync(command);
     }
 }

@@ -1,12 +1,13 @@
 {
     "name": "helidon",
     "displayName": "Helidon",
-    "description": "Helidon project generator",
-    "version": "0.0.1",
-    "icon": "images/helidon_logo_light.png",
+    "description": "Helidon project support",
+    "version": "3.0.0-SNAPSHOT",
+    "icon": "images/helidon_logo.png",
     "author": "Oracle Corporation",
     "publisher": "Oracle",
-    "license": "Apache-2.0",
+    "license": "SEE LICENSE IN LICENSE.txt",
+    "bugs": "https://github.com/oracle/helidon-build-tools/issues",
     "engines": {
         "vscode": "^1.43.0"
     },
@@ -19,7 +20,7 @@
     },
     "repository": {
         "type": "git",
-        "url": ""
+        "url": "https://github.com/oracle/helidon-build-tools"
     },
     "keywords": [
         "java",
@@ -46,11 +47,11 @@
     "main": "./out/extension.js",
     "contributes": {
         "javaExtensions": [
-            "./jars/helidon.jdt.ext.core.jar"
+            "./jars/jdt-extension-core.jar"
         ],
         "microprofile": {
             "jarExtensions": [
-                "./server/helidon.ls.ext.jar"
+                "./server/ls-extension.jar"
             ],
             "documentSelector": [
                 {
@@ -73,7 +74,7 @@
         ],
         "configuration": [
             {
-                "title": "Helidon generator configuration",
+                "title": "Helidon support configuration",
                 "properties": {
                     "helidon.showStartPage": {
                         "type": "boolean",
@@ -94,26 +95,13 @@
             },
             {
                 "command": "helidon.startDev",
-                "title": "Helidon: Start helidon dev",
-                "icon": {
-                    "dark": "assets/icons/cli-start-16-dark.png",
-                    "light": "assets/icons/cli-start-16-dark.png"
-                }
+                "title": "Helidon: Start helidon dev"
             },
             {
                 "command": "helidon.stopDev",
                 "title": "Helidon: Stop helidon dev"
             }
-        ],
-        "menus": {
-            "editor/title": [
-                {
-                    "command": "helidon.startDev",
-                    "when": "helidonProjectsExist",
-                    "group": "1_run"
-                }
-            ]
-        }
+        ]
     },
     "scripts": {
         "vscode:prepublish": "npm run compile",
@@ -131,6 +119,7 @@
         "@types/glob": "^7.1.1",
         "@types/mocha": "^7.0.1",
         "@types/node": "^12.11.7",
+        "@types/sinon": "^9.0.11",
         "@types/vscode": "^1.43.0",
         "@typescript-eslint/eslint-plugin": "^2.18.0",
         "@typescript-eslint/parser": "^2.18.0",
@@ -141,12 +130,12 @@
         "gulp-rename": "^1.4.0",
         "mocha": "^7.0.1",
         "sinon": "^9.2.4",
-        "@types/sinon": "^9.0.11",
         "ts-mock-imports": "^1.3.3",
         "typescript": "^3.7.5",
         "vscode-test": "^1.3.0"
     },
     "dependencies": {
+        "command-exists": "^1.2.9",
         "strip-ansi": "^6.0.0",
         "tree-kill": "^1.2.2",
         "vscode-uri": "^3.0.1"

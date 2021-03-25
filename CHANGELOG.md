@@ -1,9 +1,5 @@
 # Change Log
 
-All notable changes to the "helidonextension" extension will be documented in this file.
-
-Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
-
-## [Unreleased]
+## Version 3.0.0-SNAPSHOT
 
 - Initial release

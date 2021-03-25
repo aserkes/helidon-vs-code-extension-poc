@@ -26,9 +26,7 @@ export class OutputFormatter {
      */
     public formatInputString(data: string) {
         data = data.toString();
-        console.log(data);
 
-        // data=stripAnsi(data.toString());
         let countFinishedLines = data.match(/[\n\r]/g)?.length ?? 0;
         if (countFinishedLines === 0) {
             this.tempString += data;
@@ -43,7 +41,6 @@ export class OutputFormatter {
             lastOutputLineIndex = countFinishedLines;
             this.outputLines(splitData, lastOutputLineIndex);
         } else {
-            // lastOutputLineIndex = countFinishedLines - 1;
             lastOutputLineIndex = countFinishedLines;
             this.outputLines(splitData, lastOutputLineIndex);
             this.tempString = splitData[splitData.length - 1];

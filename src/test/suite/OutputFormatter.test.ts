@@ -15,7 +15,7 @@ const sinon = require("sinon");
 suite('OutputFormatter functions Test Suite', () => {
 
     setup(() => {
-        sandbox = require('sinon').createSandbox();
+        sandbox = sinon.createSandbox();
     });
 
     teardown(() => {
@@ -33,7 +33,7 @@ suite('OutputFormatter functions Test Suite', () => {
         assert(appendLineSpy.notCalled);
     });
 
-    test('Input string finished with newline character - splitted input string is sent to outputChannel', async () => {
+    test('Input string finished with newline character - split input string is sent to outputChannel', async () => {
         const inputString1: string = "string with newline character\n";
         const inputString2: string = "string with combined newline characters\r\n";
         const expectedString1: string = "string with newline character";
@@ -49,7 +49,7 @@ suite('OutputFormatter functions Test Suite', () => {
         assert(appendLineSpy.withArgs(expectedString2).calledOnce);
     });
 
-    test('Input string has with a few newline characters - splitted input string is sent to outputChannel without last part', async () => {
+    test('Input string has with a few newline characters - split input string is sent to outputChannel without last part', async () => {
         const inputString1: string = "string \n\r with newline\r\n character\n is sent to outputChannel";
         const expectedString1: string = "string ";
         const expectedString2: string = " with newline";
@@ -65,7 +65,7 @@ suite('OutputFormatter functions Test Suite', () => {
         assert(appendLineSpy.withArgs(expectedString3).calledOnce);
     });
 
-    test('Input string has with a few newline characters - splitted input string is sent to outputChannel', async () => {
+    test('Input string has with a few newline characters - split input string is sent to outputChannel', async () => {
         const inputString1: string = "string \n\r with newline\r\n character\n is sent to outputChannel\n";
         const expectedString1: string = "string ";
         const expectedString2: string = " with newline";

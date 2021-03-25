@@ -2,11 +2,11 @@ const gulp = require('gulp');
 const rename = require('gulp-rename');
 const cp = require('child_process');
 
-const helidonServerExtDir = '../helidon-jdt-ls/helidon.ls.ext'
-const helidonServerExt = 'helidon.ls.ext';
+const helidonServerExtDir = '../helidon-build-tools/lsp4helidon/ls-extension'
+const helidonServerExt = 'ls-extension';
 
-const helidonJDTExtDir = '../helidon-jdt-ls/helidon.jdt.ext';
-const helidonExtension = 'helidon.jdt.ext.core';
+const helidonJDTExtDir = '../helidon-build-tools/lsp4helidon/jdt-extension';
+const helidonExtension = 'jdt-extension-core';
 
 gulp.task('buildLsServerExt', (done) => {
   cp.execSync('mvn clean verify -DskipTests', { cwd: helidonServerExtDir , stdio: 'inherit' });

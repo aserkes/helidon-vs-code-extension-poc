@@ -40,6 +40,7 @@ suite('HelidonDev Test Suite', () => {
     });
 
     test('No helidon server stops when the workspace is empty',async () => {
+        childProcessAPIManager.mock('isCommandExist', true);
         let killProcessMock = childProcessAPIManager.mock('killProcess');
 
         await stopHelidonDev();
@@ -48,6 +49,7 @@ suite('HelidonDev Test Suite', () => {
     });
 
     test('No helidon server stops when there is no running Helidon project exists in the workspace',async () => {
+        childProcessAPIManager.mock('isCommandExist', true);
         let launchedServers = new Map([
             ["helidonDir1", <HelidonServerInstance>{
                 isActive: false,
@@ -66,6 +68,7 @@ suite('HelidonDev Test Suite', () => {
     });
 
     test('A helidon server stops when a running Helidon project exists in the workspace',async () => {
+        childProcessAPIManager.mock('isCommandExist', true);
         let launchedServers = new Map([
             ["helidonDir1", <HelidonServerInstance>{
                 isActive: true,
@@ -83,6 +86,7 @@ suite('HelidonDev Test Suite', () => {
     });
 
     test('A helidon server is choosen and stops when a few running Helidon projects exist in the workspace', async () => {
+        childProcessAPIManager.mock('isCommandExist', true);
         let launchedServers = new Map([
             ["helidonDir1", <HelidonServerInstance>{
                 isActive: true,
@@ -124,6 +128,7 @@ suite('HelidonDev Test Suite', () => {
     });
 
     test('A helidon server is choosen and starts when a few Helidon projects exist in the workspace', async () => {
+        childProcessAPIManager.mock('isCommandExist', true);
         vsCodeApiMockManager.mock('getWorkspaceFolders', [
             {uri: {fsPath: '/dir/helidonDir1/'}},
             {uri: {fsPath: '/dir/helidonDir2/'}}
@@ -152,6 +157,7 @@ suite('HelidonDev Test Suite', () => {
     });
 
     test('No helidon servers start when there are no helidon projects in workspace', async () => {
+        childProcessAPIManager.mock('isCommandExist', true);
         vsCodeApiMockManager.mock('getWorkspaceFolders', [
             {uri: {fsPath: '/dir/notHelidonDir1/'}},
             {uri: {fsPath: '/dir/notHelidonDir2/'}}
@@ -167,6 +173,7 @@ suite('HelidonDev Test Suite', () => {
     });
 
     test('A helidon server starts when an open folder with Helidon project exists in the workspace', async () => {
+        childProcessAPIManager.mock('isCommandExist', true);
         vsCodeApiMockManager.mock('getWorkspaceFolders', [
             {uri: {fsPath: '/dir/helidonDir/'}}
         ]);
@@ -181,6 +188,7 @@ suite('HelidonDev Test Suite', () => {
     });
 
     test('No helidon servers start when there are no open folder in workspace', async () => {
+        childProcessAPIManager.mock('isCommandExist', true);
         vsCodeApiMockManager.mock('getWorkspaceFolders', undefined);
         const launchedServers = await startHelidonDev();
         expect(launchedServers.size).is.equal(0);
